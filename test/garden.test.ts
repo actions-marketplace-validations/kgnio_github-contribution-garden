@@ -17,6 +17,11 @@ test('calendar renders every day with its original count, both themes', () => {
     assert.ok(svg.includes('@keyframes bee-one{0%,14%'));
     assert.ok(svg.includes('@keyframes bee-two{0%,14%'));
     assert.ok(svg.includes('animation:bee-two 18s ease-in-out -7s infinite'));
+    const firstPlot = svg.indexOf(`<title>${c.weeks[0].contributionDays[0].date}:`);
+    const lastPlot = svg.lastIndexOf('<title>');
+    assert.ok(svg.indexOf('class="gardener gardener-back"') < firstPlot);
+    assert.ok(svg.indexOf('class="gardener gardener-front"') > lastPlot);
+    assert.equal((svg.match(/class="gardener gardener-/g) || []).length, 2);
     assert.ok(!svg.includes('a year of little things growing'));
     assert.ok(!svg.includes('growing days'));
     assert.ok(!svg.includes('grow a little, every day.'));

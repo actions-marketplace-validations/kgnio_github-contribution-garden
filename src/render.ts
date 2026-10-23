@@ -128,10 +128,11 @@ text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.
 <g transform="translate(-22 -72)">
 ${months.map(month => `<text x="${month.x}" y="94" text-anchor="middle" class="small">${month.label}</text>`).join('')}
 ${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => `<text x="34" y="${y0 + i * rowStep}" class="small">${d}</text>`).join('')}
+<g class="gardener gardener-back" transform="translate(${motion.route[0].x} ${motion.route[0].y})"><g class="facing"><ellipse cy="1" rx="8" ry="2" fill="#14251c" opacity=".16"/><path d="M-3 -4 V0 M3 -4 V0" stroke="#526a55" stroke-width="3"/></g></g>
 ${flowers.join('')}
 <g class="bee bee-one" transform="translate(170 112)"><ellipse cx="-2" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse cx="3" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse rx="5" ry="3" fill="#e7bc59"/><path d="M-1 -3 V3 M2 -2 V2" stroke="#66573c" stroke-width="1.5"/></g>
 <g class="bee bee-two" transform="translate(292 247)"><ellipse cx="-2" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse cx="3" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse rx="5" ry="3" fill="#e7bc59"/><path d="M-1 -3 V3 M2 -2 V2" stroke="#66573c" stroke-width="1.5"/></g>
-<g class="gardener" transform="translate(${motion.route[0].x} ${motion.route[0].y})"><g class="facing"><ellipse cy="1" rx="8" ry="2" fill="#14251c" opacity=".16"/><path d="M-3 -4 V0 M3 -4 V0" stroke="#526a55" stroke-width="3"/><rect x="-5" y="-13" width="10" height="9" rx="3" fill="#7797ad"/><circle cy="-17" r="4" fill="#edc5a1"/><path d="M-7 -20 H7 M-4 -22 H4" stroke="#cdac6c" stroke-width="3" stroke-linecap="round"/><path d="M4 -10 L10 -7" stroke="#edc5a1" stroke-width="2"/><path d="M10 -10 h6 v5 h-6z M16 -8 l5 3" fill="#88afb0" stroke="#88afb0" stroke-width="2"/><g class="water" fill="#89c4d1"><circle cx="21" cy="-3" r="1"/><circle cx="23" cy="-1" r="1"/><circle cx="19" cy="0" r="1"/></g></g></g>
+<g class="gardener gardener-front" transform="translate(${motion.route[0].x} ${motion.route[0].y})"><g class="facing"><rect x="-5" y="-13" width="10" height="9" rx="3" fill="#7797ad"/><circle cy="-17" r="4" fill="#edc5a1"/><path d="M-7 -20 H7 M-4 -22 H4" stroke="#cdac6c" stroke-width="3" stroke-linecap="round"/><path d="M4 -10 L10 -7" stroke="#edc5a1" stroke-width="2"/><path d="M10 -10 h6 v5 h-6z M16 -8 l5 3" fill="#88afb0" stroke="#88afb0" stroke-width="2"/><g class="water" fill="#89c4d1"><circle cx="21" cy="-3" r="1"/><circle cx="23" cy="-1" r="1"/><circle cx="19" cy="0" r="1"/></g></g></g>
 </g>
 </svg>`;
 }
