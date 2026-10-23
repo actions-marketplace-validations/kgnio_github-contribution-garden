@@ -15,7 +15,7 @@ An animated SVG contribution calendar for your GitHub profile README: seedlings 
 
 - One plot per day, arranged by week and weekday.
 - Five activity stages: soil, seedling, leaves, flower, and full bloom.
-- Animated growth, a watering gardener, and a bee.
+- Gentle wind sway with permanently visible plants, a watering gardener, and a bee.
 - Separate light and dark SVGs with automatic README theme switching.
 - Daily updates using GitHub Actions.
 - Reduced-motion support, accessible descriptions, and per-day SVG titles.
@@ -128,10 +128,10 @@ The generator fails on API errors instead of silently substituting demo data.
 1. Fetch the user's contribution calendar from GitHub's GraphQL API.
 2. Map each week to a column and each weekday to a row.
 3. Use GitHub's `contributionLevel` to choose the plant's growth stage.
-4. Render a standalone SVG with a decorative 18-second growth and watering loop.
+4. Render a standalone SVG with gentle wind sway and a decorative watering loop.
 5. Publish the SVGs and embed them as images in a README.
 
-Levels are relative activity bands reported by GitHub, not fixed commit thresholds. Contributions include more than commits. Growth timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
+Levels are relative activity bands reported by GitHub, not fixed commit thresholds. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
 
 The README displays a precomputed animation, not an interactive game. Only days returned by GitHub are rendered. Empty calendars produce empty soil plots, without inventing activity.
 

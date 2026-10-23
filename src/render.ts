@@ -11,12 +11,13 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
   calendar.weeks.forEach((week, wi) => week.contributionDays.forEach(day => {
     const x = x0 + wi * step, y = y0 + day.weekday * rowStep;
     const level = levels.indexOf(day.contributionLevel);
-    const delay = ((wi / Math.max(1, calendar.weeks.length - 1)) * 8 + day.weekday * 0.12).toFixed(2);
+    const delay = (-(wi * 0.19 + day.weekday * 0.37)).toFixed(2);
+    const duration = (5.6 + ((wi + day.weekday * 3) % 5) * 0.35).toFixed(2);
     const h = [0, 5, 9, 13, 17][level];
     const hue = ['#f3b1a8', '#edbd55', '#bfaddf', '#fae6af'][(wi + day.weekday) % 4];
     let plant = '';
     if (level > 0) {
-      plant = `<g class="grow" style="animation-delay:${delay}s"><path d="M0 0 V-${h}" stroke="#72a260" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3 Q-7 -10 -5 -4 Q-3 -2 0 -3" fill="#79ad67"/>${level > 1 ? `<path d="M0 -5 Q7 -13 6 -7 Q4 -4 0 -5" fill="#94bd72"/>` : ''}${level > 2 ? `<g transform="translate(0 -${h})" fill="${hue}"><circle cy="-3" r="2.5"/><circle cx="3" r="2.5"/><circle cy="3" r="2.5"/><circle cx="-3" r="2.5"/><circle r="1.8" fill="#a17638"/></g>` : ''}${level === 4 ? `<circle cx="5" cy="-12" r="1.4" fill="#e7ca62"/>` : ''}</g>`;
+      plant = `<g class="sway" style="animation-delay:${delay}s;animation-duration:${duration}s"><path d="M0 0 V-${h}" stroke="#72a260" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3 Q-7 -10 -5 -4 Q-3 -2 0 -3" fill="#79ad67"/>${level > 1 ? `<path d="M0 -5 Q7 -13 6 -7 Q4 -4 0 -5" fill="#94bd72"/>` : ''}${level > 2 ? `<g transform="translate(0 -${h})" fill="${hue}"><circle cy="-3" r="2.5"/><circle cx="3" r="2.5"/><circle cy="3" r="2.5"/><circle cx="-3" r="2.5"/><circle r="1.8" fill="#a17638"/></g>` : ''}${level === 4 ? `<circle cx="5" cy="-12" r="1.4" fill="#e7ca62"/>` : ''}</g>`;
     }
     flowers.push(`<g transform="translate(${x} ${y})"><title>${day.date}: ${day.contributionCount} contributions</title><ellipse rx="6.3" ry="2.6" fill="${(wi + day.weekday) % 2 ? p.soil : p.soil2}"/>${plant}</g>`);
   }));
@@ -40,12 +41,12 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
 <title id="title">${escapeXml(user)}'s contribution garden${demo ? ' — sample data' : ''}</title>
 <desc id="desc">Each plot is one day. No contributions: soil. Increasing activity: seedling, leaves, flower, full bloom. ${calendar.totalContributions} contributions. A gardener waters the garden. ${demo ? 'Demonstration with synthetic data.' : 'GitHub contribution calendar.'}</desc>
 <style>
-text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.small{font-size:10px;fill:${p.muted}}.grow{animation:bloom 18s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}.gardener{animation:walk 18s linear infinite}.water{animation:water 1.5s ease-in infinite}.bee{animation:bee 12s ease-in-out infinite}
-@keyframes bloom{0%,5%{transform:scale(.18);opacity:.5}24%,95%{transform:scale(1);opacity:1}100%{transform:scale(.18);opacity:.5}}
+text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.small{font-size:10px;fill:${p.muted}}.sway{animation:sway 6s ease-in-out infinite;transform-box:view-box;transform-origin:0px 0px}.gardener{animation:walk 18s linear infinite}.water{animation:water 1.5s ease-in infinite}.bee{animation:bee 12s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(4deg)}}
 @keyframes walk{${gardenerFrames}}
 @keyframes water{0%{opacity:0;transform:translate(0,0)}30%{opacity:.8}100%{opacity:0;transform:translate(4px,9px)}}
 @keyframes bee{0%,100%{transform:translate(170px,112px)}35%{transform:translate(530px,165px)}70%{transform:translate(850px,110px)}}
-@media(prefers-reduced-motion:reduce){.grow,.gardener,.water,.bee{animation:none}.gardener{transform:translate(850px,310px)}.bee{transform:translate(400px,105px)}}
+@media(prefers-reduced-motion:reduce){.sway,.gardener,.water,.bee{animation:none}.gardener{transform:translate(850px,310px)}.bee{transform:translate(400px,105px)}}
 </style>
 <rect width="1000" height="420" rx="22" fill="${p.bg}"/>
 <rect x="22" y="72" width="956" height="260" rx="16" fill="${p.panel}"/>
