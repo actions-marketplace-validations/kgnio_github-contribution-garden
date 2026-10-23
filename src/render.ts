@@ -37,10 +37,8 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
 @keyframes bee{0%,100%{transform:translate(170px,112px)}35%{transform:translate(530px,165px)}70%{transform:translate(850px,110px)}}
 @media(prefers-reduced-motion:reduce){.sway,.gardener,.water,.bee{animation:none}.gardener{transform:translate(850px,310px)}.bee{transform:translate(400px,105px)}}
 </style>
-<rect width="956" height="236" rx="16" fill="${p.panel}"/>
 <g transform="translate(-22 -98)">
 ${flowers.join('')}
-<path d="M38 321 H962" stroke="${p.line}" stroke-width="2" stroke-dasharray="2 5"/>
 <g class="bee" transform="translate(400 105)"><ellipse cx="-2" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse cx="3" cy="-4" rx="4" ry="2.5" fill="#cee7df"/><ellipse rx="5" ry="3" fill="#e7bc59"/><path d="M-1 -3 V3 M2 -2 V2" stroke="#66573c" stroke-width="1.5"/></g>
 <g class="gardener" transform="translate(850 310)"><ellipse cy="1" rx="8" ry="2" fill="#14251c" opacity=".16"/><path d="M-3 -4 V0 M3 -4 V0" stroke="#526a55" stroke-width="3"/><rect x="-5" y="-13" width="10" height="9" rx="3" fill="#7797ad"/><circle cy="-17" r="4" fill="#edc5a1"/><path d="M-7 -20 H7 M-4 -22 H4" stroke="#cdac6c" stroke-width="3" stroke-linecap="round"/><path d="M4 -10 L10 -7" stroke="#edc5a1" stroke-width="2"/><path d="M10 -10 h6 v5 h-6z M16 -8 l5 3" fill="#88afb0" stroke="#88afb0" stroke-width="2"/><g class="water" fill="#89c4d1"><circle cx="21" cy="-3" r="1"/><circle cx="23" cy="-1" r="1"/><circle cx="19" cy="0" r="1"/></g></g>
 </g>

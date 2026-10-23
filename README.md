@@ -13,7 +13,7 @@ An animated SVG contribution calendar for your GitHub profile README: seedlings 
 
 ## Features
 
-- Garden-only artwork with no visible headings, labels, or statistics.
+- Transparent, borderless garden artwork with no visible headings, labels, or statistics.
 - One plot per day, arranged by week and weekday.
 - Five activity stages: soil, seedling, leaves, flower, and full bloom.
 - Gentle wind sway with permanently visible plants, a watering gardener, and a bee.
