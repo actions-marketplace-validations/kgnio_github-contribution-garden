@@ -1,0 +1,32 @@
+name: GitHub Contribution Garden
+description: Generate light and dark animated SVG gardens from a GitHub contribution graph.
+author: kgnio
+branding:
+  icon: sun
+  color: green
+inputs:
+  github_user_name:
+    description: GitHub username whose contribution calendar will be rendered.
+    required: true
+  github_token:
+    description: Token used to read the GitHub contribution calendar.
+    required: false
+    default: ${{ github.token }}
+  output_dir:
+    description: Directory for the two generated SVGs, relative to the workflow working directory.
+    required: false
+    default: dist
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with:
+        node-version: '24'
+    - name: Grow the contribution garden
+      shell: bash
+      env:
+        GARDEN_ACTION_PATH: ${{ github.action_path }}
+        GARDEN_USER: ${{ inputs.github_user_name }}
+        GARDEN_OUTPUT: ${{ inputs.output_dir }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: node "$GARDEN_ACTION_PATH/src/cli.ts" --user "$GARDEN_USER" --out "$GARDEN_OUTPUT"
