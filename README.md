@@ -13,6 +13,7 @@ An animated SVG contribution calendar for your GitHub profile README: seedlings 
 
 ## Features
 
+- Garden-only artwork with no visible headings, labels, or statistics.
 - One plot per day, arranged by week and weekday.
 - Five activity stages: soil, seedling, leaves, flower, and full bloom.
 - Gentle wind sway with permanently visible plants, a watering gardener, and a bee.
@@ -107,7 +108,7 @@ Requires Node.js **24 or newer**. Clone this repository, then run:
 npm run demo
 ```
 
-Open the SVGs in `dist/` in a browser. The demo is deterministic and clearly labeled **DEMO / SAMPLE DATA**. No token or network access is used in demo mode.
+Open the SVGs in `dist/` in a browser. The demo is deterministic and identified as sample data in the SVG's accessible title and description. No token or network access is used in demo mode.
 
 For real activity, set `GITHUB_TOKEN` in your shell environment using your preferred secret manager, then run:
 
