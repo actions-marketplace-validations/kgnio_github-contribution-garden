@@ -13,6 +13,10 @@ test('calendar renders every day with its original count, both themes', () => {
     assert.ok(svg.includes('height="240" rx="16"'));
     assert.ok(svg.includes('viewBox="0 0 956 240"'));
     assert.ok(!svg.includes('stroke-dasharray'));
+    assert.equal((svg.match(/<g class="bee bee-/g) || []).length, 2);
+    assert.ok(svg.includes('@keyframes bee-one{0%,14%'));
+    assert.ok(svg.includes('@keyframes bee-two{0%,14%'));
+    assert.ok(svg.includes('animation:bee-two 18s ease-in-out -7s infinite'));
     assert.ok(!svg.includes('a year of little things growing'));
     assert.ok(!svg.includes('growing days'));
     assert.ok(!svg.includes('grow a little, every day.'));
