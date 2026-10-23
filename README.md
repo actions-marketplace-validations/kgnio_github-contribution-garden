@@ -134,7 +134,7 @@ The generator fails on API errors instead of silently substituting demo data.
 4. Render a standalone SVG with gentle wind sway and a decorative watering loop.
 5. Publish the SVGs and embed them as images in a README.
 
-Growth uses fixed daily contribution counts rather than GitHub's relative intensity levels. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. A stronger gust moves across a different row every eight seconds after an initial four-second pause; each row repeats every 56 seconds. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
+Growth uses fixed daily contribution counts rather than GitHub's relative intensity levels. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. A stronger gust moves across a different row every eight seconds after an initial four-second pause; each row repeats every 56 seconds. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener follows a deterministic, random-looking closed route using horizontal and vertical paths. Segment timing follows distance, so movement has constant speed with no fast return jump. Speed is half the previous animation's average travel speed for the same calendar.
 
 The README displays a precomputed animation, not an interactive game. Only days returned by GitHub are rendered. Empty calendars produce empty soil plots, without inventing activity.
 

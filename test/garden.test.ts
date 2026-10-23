@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { demoCalendar, fetchCalendar, validateCalendar } from '../src/data.ts';
-import { calendarMonthLabels, renderGarden } from '../src/render.ts';
+import { calendarMonthLabels, gardenerMotion, renderGarden } from '../src/render.ts';
 
 test('calendar renders every day with its original count, both themes', () => {
   const c = validateCalendar(demoCalendar());
@@ -66,4 +66,28 @@ test('exact daily counts determine leaves and flower colors independently of Git
     assert.equal(svg.includes('<g transform="translate(0 -17)"'), count >= 3);
     if (hue) assert.ok(svg.includes('fill="' + hue + '"'));
   }
+});
+
+test('gardener follows a closed orthogonal route at constant half-average legacy speed', () => {
+  const calendar = { totalContributions: 2, weeks: [
+    { contributionDays: [{ date: '2026-10-01', weekday: 4, contributionCount: 1, contributionLevel: 'FIRST_QUARTILE' }] },
+    { contributionDays: [{ date: '2026-10-08', weekday: 4, contributionCount: 1, contributionLevel: 'FIRST_QUARTILE' }] }
+  ] };
+  const motion = gardenerMotion(calendar);
+  assert.deepEqual(motion.route[0], motion.route.at(-1));
+  assert.ok(Math.abs(motion.speed - 34 / 36) < 1e-10);
+  const percentages = [...motion.frames.matchAll(/([\d.]+)%/g)].map(m => Number(m[1]));
+  let distance = 0, horizontal = false, vertical = false;
+  for (let i = 1; i < motion.route.length; i++) {
+    const a = motion.route[i - 1], b = motion.route[i];
+    assert.ok(a.x === b.x || a.y === b.y, 'no diagonal movement');
+    horizontal ||= a.x !== b.x; vertical ||= a.y !== b.y;
+    const length = Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
+    const elapsed = (percentages[i] - percentages[i - 1]) / 100 * motion.duration;
+    assert.ok(Math.abs(length / elapsed - motion.speed) < 0.00001);
+    distance += length;
+  }
+  assert.ok(horizontal && vertical);
+  assert.ok(Math.abs(motion.duration - distance / motion.speed) < 1e-8);
+  assert.deepEqual(gardenerMotion(calendar), motion, 'repeatable random-looking route');
 });
