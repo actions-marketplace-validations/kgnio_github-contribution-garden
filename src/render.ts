@@ -28,7 +28,7 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
     if (!date) return;
     const month = date.slice(0, 7);
     if (month !== previous && (i === 0 || i < calendar.weeks.length - 2)) {
-      months.push(`<text x="${x0 + i * step}" y="94" class="small">${new Date(date + 'T00:00:00Z').toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })}</text>`);
+      months.push(new Date(date + 'T00:00:00Z').toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }));
     }
     previous = month;
   });
@@ -51,7 +51,7 @@ text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.
 </style>
 <rect width="956" height="260" rx="16" fill="${p.panel}"/>
 <g transform="translate(-22 -72)">
-${months.join('')}
+${months.map((month, i) => `<text x="${x0 + i * ((calendar.weeks.length - 1) * step) / Math.max(1, months.length - 1)}" y="94" class="small">${month}</text>`).join('')}
 ${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => `<text x="34" y="${y0 + i * rowStep}" class="small">${d}</text>`).join('')}
 ${flowers.join('')}
 <path d="M38 321 H962" stroke="${p.line}" stroke-width="2" stroke-dasharray="2 5"/>
