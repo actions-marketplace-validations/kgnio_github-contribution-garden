@@ -1,0 +1,44 @@
+name: Test Marketplace Action
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - action.yml
+      - src/**
+      - test/**
+      - .github/workflows/action-smoke-test.yml
+  pull_request:
+    paths:
+      - action.yml
+      - src/**
+      - test/**
+      - .github/workflows/action-smoke-test.yml
+
+permissions:
+  contents: read
+
+jobs:
+  action-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run the local composite action
+        uses: ./
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          github_token: ${{ github.token }}
+          output_dir: action-smoke-output
+
+      - name: Verify generated SVG files
+        shell: bash
+        run: |
+          test -s action-smoke-output/contribution-garden.svg
+          test -s action-smoke-output/contribution-garden-dark.svg
+          grep -q '<svg' action-smoke-output/contribution-garden.svg
+          grep -q '<svg' action-smoke-output/contribution-garden-dark.svg
+          grep -q 'contribution garden' action-smoke-output/contribution-garden.svg
+          grep -q 'contribution garden' action-smoke-output/contribution-garden-dark.svg
