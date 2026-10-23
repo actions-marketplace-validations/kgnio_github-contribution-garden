@@ -10,7 +10,9 @@ test('calendar renders every day with its original count, both themes', () => {
     assert.equal((svg.match(/<title>\d{4}-/g) || []).length, 371);
     assert.ok(svg.includes('Demonstration with synthetic data.'));
     assert.ok(svg.includes('class="small">Oct</text>'));
-    assert.ok(svg.includes('height="260" rx="16"'));
+    assert.ok(svg.includes('height="240" rx="16"'));
+    assert.ok(svg.includes('viewBox="0 0 956 240"'));
+    assert.ok(!svg.includes('stroke-dasharray'));
     assert.ok(!svg.includes('a year of little things growing'));
     assert.ok(!svg.includes('growing days'));
     assert.ok(!svg.includes('grow a little, every day.'));
