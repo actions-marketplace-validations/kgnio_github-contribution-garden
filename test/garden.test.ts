@@ -68,14 +68,14 @@ test('exact daily counts determine leaves and flower colors independently of Git
   }
 });
 
-test('gardener follows a closed orthogonal route at constant half-average legacy speed', () => {
+test('gardener follows a closed orthogonal route at constant quarter-average legacy speed', () => {
   const calendar = { totalContributions: 2, weeks: [
     { contributionDays: [{ date: '2026-10-01', weekday: 4, contributionCount: 1, contributionLevel: 'FIRST_QUARTILE' }] },
     { contributionDays: [{ date: '2026-10-08', weekday: 4, contributionCount: 1, contributionLevel: 'FIRST_QUARTILE' }] }
   ] };
   const motion = gardenerMotion(calendar);
   assert.deepEqual(motion.route[0], motion.route.at(-1));
-  assert.ok(Math.abs(motion.speed - 34 / 36) < 1e-10);
+  assert.ok(Math.abs(motion.speed - 34 / 72) < 1e-10);
   const percentages = [...motion.frames.matchAll(/([\d.]+)%/g)].map(m => Number(m[1]));
   let distance = 0, horizontal = false, vertical = false;
   for (let i = 1; i < motion.route.length; i++) {
@@ -90,4 +90,23 @@ test('gardener follows a closed orthogonal route at constant half-average legacy
   assert.ok(horizontal && vertical);
   assert.ok(Math.abs(motion.duration - distance / motion.speed) < 1e-8);
   assert.deepEqual(gardenerMotion(calendar), motion, 'repeatable random-looking route');
+});
+
+test('gardener turns to face horizontal travel and never retraces a segment', () => {
+  const { route, frames, facingFrames } = gardenerMotion(demoCalendar());
+  const signs = [...facingFrames.matchAll(/scaleX\((-?1)\)/g)].map(m => Number(m[1]));
+  assert.equal(signs.length, route.length);
+  assert.equal(signs[0], signs.at(-1));
+  assert.equal([...frames.matchAll(/%/g)].length, route.length);
+  for (let i = 0; i < route.length - 1; i++) {
+    const a = route[i], b = route[i + 1];
+    if (a.x !== b.x) assert.equal(signs[i], Math.sign(b.x - a.x));
+    for (let j = i + 1; j < route.length - 1; j++) {
+      const c = route[j], d = route[j + 1];
+      if (a.y === b.y && c.y === d.y && a.y === c.y)
+        assert.ok(Math.min(Math.max(a.x, b.x), Math.max(c.x, d.x)) <= Math.max(Math.min(a.x, b.x), Math.min(c.x, d.x)));
+      if (a.x === b.x && c.x === d.x && a.x === c.x)
+        assert.ok(Math.min(Math.max(a.y, b.y), Math.max(c.y, d.y)) <= Math.max(Math.min(a.y, b.y), Math.min(c.y, d.y)));
+    }
+  }
 });
