@@ -42,6 +42,10 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
     let plant = '';
     if (level > 0) {
       plant = `<g class="sway" style="animation-delay:${delay}s;animation-duration:${duration}s"><path d="M0 0 V-${h}" stroke="#72a260" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3 Q-7 -10 -5 -4 Q-3 -2 0 -3" fill="#79ad67"/>${level > 1 ? `<path d="M0 -5 Q7 -13 6 -7 Q4 -4 0 -5" fill="#94bd72"/>` : ''}${level > 2 ? `<g transform="translate(0 -${h})" fill="${hue}"><circle cy="-3" r="2.5"/><circle cx="3" r="2.5"/><circle cy="3" r="2.5"/><circle cx="-3" r="2.5"/><circle r="1.8" fill="#a17638"/></g>` : ''}</g>`;
+      // A separate outer transform adds gusts without restarting the gentle sway.
+      // Eight-second row slots keep each traveling wave on a single row.
+      const gustDelay = (4 + day.weekday * 8 + wi * 0.03).toFixed(2);
+      plant = `<g class="gust" style="animation-delay:${gustDelay}s">${plant}</g>`;
     }
     flowers.push(`<g transform="translate(${x} ${y})"><title>${day.date}: ${day.contributionCount} contributions</title><ellipse rx="6.3" ry="2.6" fill="${(wi + day.weekday) % 2 ? p.soil : p.soil2}"/>${plant}</g>`);
   }));
@@ -56,12 +60,13 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
 <desc id="desc">Each plot is one day. 0 contributions: bare soil. 1 contribution: one leaf. 2 contributions: two leaves. 3 or more: flowers colored by contribution count. ${calendar.totalContributions} contributions. A gardener waters the garden. ${demo ? 'Demonstration with synthetic data.' : 'GitHub contribution calendar.'}</desc>
 <style>
 text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.small{font-size:10px;fill:${p.muted}}
-.sway{animation:sway 6s ease-in-out infinite;transform-box:view-box;transform-origin:0px 0px}.gardener{animation:walk 18s linear infinite}.water{animation:water 1.5s ease-in infinite}.bee{animation:bee 12s ease-in-out infinite}
+.sway{animation:sway 6s ease-in-out infinite;transform-box:view-box;transform-origin:0px 0px}.gust{animation:gust 56s ease-in-out infinite;transform-box:view-box;transform-origin:0px 0px}.gardener{animation:walk 18s linear infinite}.water{animation:water 1.5s ease-in infinite}.bee{animation:bee 12s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(4deg)}}
+@keyframes gust{0%,5%,100%{transform:rotate(0deg)}1%{transform:rotate(-12deg)}2%{transform:rotate(16deg)}3.5%{transform:rotate(-8deg)}}
 @keyframes walk{${gardenerFrames}}
 @keyframes water{0%{opacity:0;transform:translate(0,0)}30%{opacity:.8}100%{opacity:0;transform:translate(4px,9px)}}
 @keyframes bee{0%,100%{transform:translate(170px,112px)}35%{transform:translate(530px,165px)}70%{transform:translate(850px,110px)}}
-@media(prefers-reduced-motion:reduce){.sway,.gardener,.water,.bee{animation:none}.gardener{transform:translate(850px,310px)}.bee{transform:translate(400px,105px)}}
+@media(prefers-reduced-motion:reduce){.sway,.gust,.gardener,.water,.bee{animation:none}.gardener{transform:translate(850px,310px)}.bee{transform:translate(400px,105px)}}
 </style>
 <rect width="956" height="260" rx="16" fill="${p.panel}"/>
 <g transform="translate(-22 -72)">

@@ -18,6 +18,7 @@ An animated SVG contribution calendar for your GitHub profile README: seedlings 
 - Simple growth rules: 0 contributions = soil, 1 = one leaf, 2 = two leaves, 3+ = a flower.
 - Flower colors follow daily contribution counts: 3–4 pink, 5–9 gold, 10–19 lavender, 20+ cream.
 - Gentle wind sway with permanently visible plants, a watering gardener, and a bee.
+- Occasional stronger gusts travel left to right along one row at a time, with a brief settling motion.
 - Separate light and dark SVGs with automatic README theme switching.
 - Daily updates using GitHub Actions.
 - Reduced-motion support, accessible descriptions, and per-day SVG titles.
@@ -133,7 +134,7 @@ The generator fails on API errors instead of silently substituting demo data.
 4. Render a standalone SVG with gentle wind sway and a decorative watering loop.
 5. Publish the SVGs and embed them as images in a README.
 
-Growth uses fixed daily contribution counts rather than GitHub's relative intensity levels. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
+Growth uses fixed daily contribution counts rather than GitHub's relative intensity levels. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. A stronger gust moves across a different row every eight seconds after an initial four-second pause; each row repeats every 56 seconds. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
 
 The README displays a precomputed animation, not an interactive game. Only days returned by GitHub are rendered. Empty calendars produce empty soil plots, without inventing activity.
 
