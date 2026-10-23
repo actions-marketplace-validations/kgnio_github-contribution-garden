@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate garden
-        uses: kgnio/github-contribution-garden@main
+        uses: kgnio/github-contribution-garden@v1.0.0
         with:
           github_user_name: ${{ github.repository_owner }}
           github_token: ${{ secrets.GITHUB_TOKEN }}

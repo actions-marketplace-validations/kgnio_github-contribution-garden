@@ -6,12 +6,14 @@ on:
     branches: [main]
     paths:
       - action.yml
+      - package.json
       - src/**
       - test/**
       - .github/workflows/action-smoke-test.yml
   pull_request:
     paths:
       - action.yml
+      - package.json
       - src/**
       - test/**
       - .github/workflows/action-smoke-test.yml
