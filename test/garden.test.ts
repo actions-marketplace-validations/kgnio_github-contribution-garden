@@ -9,7 +9,12 @@ test('calendar renders every day with its original count, both themes', () => {
     const svg = renderGarden(c, 'kgnio', dark, true);
     assert.equal((svg.match(/<title>\d{4}-/g) || []).length, 371);
     assert.ok(svg.includes('Demonstration with synthetic data.'));
-    assert.ok(!svg.includes('<text'), 'only garden artwork should be visible');
+    assert.ok(svg.includes('class="small">Oct</text>'));
+    assert.ok(svg.includes('height="260" rx="16"'));
+    assert.ok(!svg.includes('a year of little things growing'));
+    assert.ok(!svg.includes('growing days'));
+    assert.ok(!svg.includes('grow a little, every day.'));
+    assert.ok(!svg.includes('width="1000" height="420"'));
     for (const week of c.weeks) for (const day of week.contributionDays) assert.ok(svg.includes(`${day.date}: ${day.contributionCount} contributions`));
     assert.ok(!svg.includes('NaN'));
   }
