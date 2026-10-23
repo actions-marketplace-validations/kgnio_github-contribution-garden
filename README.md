@@ -15,7 +15,8 @@ An animated SVG contribution calendar for your GitHub profile README: seedlings 
 
 - A themed garden panel with month and weekday labels, without an outer card, header, or footer statistics.
 - One plot per day, arranged by week and weekday.
-- Five activity stages: soil, seedling, leaves, flower, and full bloom.
+- Simple growth rules: 0 contributions = soil, 1 = one leaf, 2 = two leaves, 3+ = a flower.
+- Flower colors follow daily contribution counts: 3–4 pink, 5–9 gold, 10–19 lavender, 20+ cream.
 - Gentle wind sway with permanently visible plants, a watering gardener, and a bee.
 - Separate light and dark SVGs with automatic README theme switching.
 - Daily updates using GitHub Actions.
@@ -128,11 +129,11 @@ The generator fails on API errors instead of silently substituting demo data.
 
 1. Fetch the user's contribution calendar from GitHub's GraphQL API.
 2. Map each week to a column and each weekday to a row.
-3. Use GitHub's `contributionLevel` to choose the plant's growth stage.
+3. Use each day's exact `contributionCount` to choose leaves, flowers, and flower colors.
 4. Render a standalone SVG with gentle wind sway and a decorative watering loop.
 5. Publish the SVGs and embed them as images in a README.
 
-Levels are relative activity bands reported by GitHub, not fixed commit thresholds. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
+Growth uses fixed daily contribution counts rather than GitHub's relative intensity levels. Contributions include more than commits. Plants stay visible at their activity level and gently sway from their roots. Sway timing and the gardener's route are decorative; they do not represent the exact times of contributions. The gardener visits a sample of active plots.
 
 The README displays a precomputed animation, not an interactive game. Only days returned by GitHub are rendered. Empty calendars produce empty soil plots, without inventing activity.
 

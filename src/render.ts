@@ -1,4 +1,3 @@
-import { levels } from './data.ts';
 import type { Calendar } from './data.ts';
 
 export const escapeXml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]!));
@@ -34,14 +33,15 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
   const flowers: string[] = [];
   calendar.weeks.forEach((week, wi) => week.contributionDays.forEach(day => {
     const x = x0 + wi * step, y = y0 + day.weekday * rowStep;
-    const level = levels.indexOf(day.contributionLevel);
+    const count = day.contributionCount;
+    const level = Math.min(count, 3);
     const delay = (-(wi * 0.19 + day.weekday * 0.37)).toFixed(2);
     const duration = (5.6 + ((wi + day.weekday * 3) % 5) * 0.35).toFixed(2);
-    const h = [0, 5, 9, 13, 17][level];
-    const hue = ['#f3b1a8', '#edbd55', '#bfaddf', '#fae6af'][(wi + day.weekday) % 4];
+    const h = [0, 5, 9, 17][level];
+    const hue = count >= 20 ? '#fae6af' : count >= 10 ? '#bfaddf' : count >= 5 ? '#edbd55' : '#f3b1a8';
     let plant = '';
     if (level > 0) {
-      plant = `<g class="sway" style="animation-delay:${delay}s;animation-duration:${duration}s"><path d="M0 0 V-${h}" stroke="#72a260" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3 Q-7 -10 -5 -4 Q-3 -2 0 -3" fill="#79ad67"/>${level > 1 ? `<path d="M0 -5 Q7 -13 6 -7 Q4 -4 0 -5" fill="#94bd72"/>` : ''}${level > 2 ? `<g transform="translate(0 -${h})" fill="${hue}"><circle cy="-3" r="2.5"/><circle cx="3" r="2.5"/><circle cy="3" r="2.5"/><circle cx="-3" r="2.5"/><circle r="1.8" fill="#a17638"/></g>` : ''}${level === 4 ? `<circle cx="5" cy="-12" r="1.4" fill="#e7ca62"/>` : ''}</g>`;
+      plant = `<g class="sway" style="animation-delay:${delay}s;animation-duration:${duration}s"><path d="M0 0 V-${h}" stroke="#72a260" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3 Q-7 -10 -5 -4 Q-3 -2 0 -3" fill="#79ad67"/>${level > 1 ? `<path d="M0 -5 Q7 -13 6 -7 Q4 -4 0 -5" fill="#94bd72"/>` : ''}${level > 2 ? `<g transform="translate(0 -${h})" fill="${hue}"><circle cy="-3" r="2.5"/><circle cx="3" r="2.5"/><circle cy="3" r="2.5"/><circle cx="-3" r="2.5"/><circle r="1.8" fill="#a17638"/></g>` : ''}</g>`;
     }
     flowers.push(`<g transform="translate(${x} ${y})"><title>${day.date}: ${day.contributionCount} contributions</title><ellipse rx="6.3" ry="2.6" fill="${(wi + day.weekday) % 2 ? p.soil : p.soil2}"/>${plant}</g>`);
   }));
@@ -53,7 +53,7 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
   const gardenerFrames = route.map((point, i) => `${(i / route.length * 100).toFixed(2)}% {transform:translate(${point.x}px,${point.y + 9}px)}`).join('') + `100%{transform:translate(${route[0].x}px,${route[0].y + 9}px)}`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="956" height="260" viewBox="0 0 956 260" role="img" aria-labelledby="title desc">
 <title id="title">${escapeXml(user)}'s contribution garden${demo ? ' — sample data' : ''}</title>
-<desc id="desc">Each plot is one day. No contributions: soil. Increasing activity: seedling, leaves, flower, full bloom. ${calendar.totalContributions} contributions. A gardener waters the garden. ${demo ? 'Demonstration with synthetic data.' : 'GitHub contribution calendar.'}</desc>
+<desc id="desc">Each plot is one day. 0 contributions: bare soil. 1 contribution: one leaf. 2 contributions: two leaves. 3 or more: flowers colored by contribution count. ${calendar.totalContributions} contributions. A gardener waters the garden. ${demo ? 'Demonstration with synthetic data.' : 'GitHub contribution calendar.'}</desc>
 <style>
 text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.small{font-size:10px;fill:${p.muted}}
 .sway{animation:sway 6s ease-in-out infinite;transform-box:view-box;transform-origin:0px 0px}.gardener{animation:walk 18s linear infinite}.water{animation:water 1.5s ease-in infinite}.bee{animation:bee 12s ease-in-out infinite}

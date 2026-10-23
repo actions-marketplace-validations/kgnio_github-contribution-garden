@@ -52,3 +52,18 @@ test('month labels follow real date ranges, including month changes inside weeks
   const boundary = { totalContributions: 0, weeks: [{ contributionDays: [day('2026-01-31', 6), day('2026-02-01', 0)] }, { contributionDays: [day('2026-02-02', 1)] }] };
   assert.deepEqual(calendarMonthLabels(boundary).map(l => l.key), ['2026-02']);
 });
+
+test('exact daily counts determine leaves and flower colors independently of GitHub intensity', () => {
+  for (const dark of [false, true]) for (const [count, leaves, hue] of [
+    [0, 0, null], [1, 1, null], [2, 2, null],
+    [3, 2, '#f3b1a8'], [4, 2, '#f3b1a8'], [5, 2, '#edbd55'],
+    [9, 2, '#edbd55'], [10, 2, '#bfaddf'], [19, 2, '#bfaddf'], [20, 2, '#fae6af'], [100, 2, '#fae6af']
+  ] as const) {
+    const calendar = { totalContributions: count, weeks: [{ contributionDays: [{ date: '2026-10-23', weekday: 5, contributionCount: count, contributionLevel: 'FIRST_QUARTILE' }] }] };
+    const svg = renderGarden(calendar, 'demo', dark);
+    assert.equal((svg.match(/fill="#(?:79ad67|94bd72)"/g) || []).length, leaves, String(count));
+    assert.equal(svg.includes('class="sway"'), count > 0);
+    assert.equal(svg.includes('<g transform="translate(0 -17)"'), count >= 3);
+    if (hue) assert.ok(svg.includes('fill="' + hue + '"'));
+  }
+});
