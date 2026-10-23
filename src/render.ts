@@ -30,19 +30,27 @@ type GardenPoint = { x: number; y: number };
 export function gardenerMotion(calendar: Calendar): { route: GardenPoint[]; duration: number; frames: string; facingFrames: string; speed: number } {
   const width = Math.max(1, calendar.weeks.length - 1) * 17;
   const left = 66.5;
-  const route: GardenPoint[] = [{ x: left, y: 135 }];
-  // Asymmetric switchbacks visit all rows. A reserved left-side return lane
-  // and bottom path close the loop without retracing any garden segment.
-  const offsets = [0, 0.09, 0.03, 0.12, 0.05, 0.01, 0.07];
-  for (let row = 0; row < 7; row++) {
-    const y = 135 + row * 27;
-    if (row > 0) route.push({ x: route.at(-1)!.x, y });
-    const x = row % 2 === 0
-      ? left + width * (1 - offsets[row])
-      : left + width * (0.08 + offsets[row]);
-    route.push({ x, y });
-  }
-  route.push({ x: route.at(-1)!.x, y: 315 }, { x: left, y: 315 }, { x: left, y: 135 });
+
+  // A deterministic, maze-like loop made from short runs between nearby
+  // flowers. It changes rows often, occasionally climbs, and never reaches
+  // either edge or retraces a segment.
+  const stops: Array<[number, number]> = [
+    [.12, 0], [.22, 0], [.22, 1], [.30, 1], [.30, 2], [.20, 2],
+    [.20, 3], [.34, 3], [.34, 2], [.42, 2], [.42, 3], [.50, 3],
+    [.50, 4], [.38, 4], [.38, 5], [.52, 5], [.52, 4], [.60, 4],
+    [.60, 3], [.70, 3], [.70, 4], [.78, 4], [.78, 5], [.66, 5],
+    [.66, 6], [.80, 6], [.86, 6], [.86, 5], [.80, 5], [.80, 4],
+    [.86, 4], [.86, 3], [.76, 3], [.76, 2], [.64, 2], [.64, 1],
+    [.52, 1], [.52, 0], [.40, 0], [.40, 1], [.32, 1], [.32, 0],
+    [.24, 0], [.24, 1], [.24, 2], [.24, 3], [.24, 4], [.24, 5],
+    [.24, 6], [.14, 6], [.14, 5], [.20, 5], [.20, 4], [.12, 4],
+    [.12, 3], [.18, 3], [.18, 2], [.06, 2], [.06, 1], [.12, 1],
+    [.12, 0]
+  ];
+  const route: GardenPoint[] = stops.map(([column, row]) => ({
+    x: left + width * column,
+    y: 135 + row * 27
+  }));
 
   // The old 18-second animation had variable segment speeds. Halve its
   // average travel speed twice: one quarter of the original average speed.

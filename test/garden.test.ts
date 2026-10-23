@@ -92,6 +92,28 @@ test('gardener follows a closed orthogonal route at constant quarter-average leg
   assert.deepEqual(gardenerMotion(calendar), motion, 'repeatable random-looking route');
 });
 
+test('gardener uses short runs, changes rows often, and sometimes climbs', () => {
+  const motion = gardenerMotion(demoCalendar());
+  const width = 52 * 17;
+  let horizontalRuns = 0, rowChanges = 0, climbs = 0;
+  for (let i = 1; i < motion.route.length; i++) {
+    const a = motion.route[i - 1], b = motion.route[i];
+    if (a.y === b.y) {
+      horizontalRuns++;
+      assert.ok(Math.abs(b.x - a.x) <= width * .14 + 1e-8, 'horizontal run stays short');
+      assert.ok(a.x > 66.5 && a.x < 66.5 + width, 'route avoids row edges');
+      assert.ok(b.x > 66.5 && b.x < 66.5 + width, 'route avoids row edges');
+    } else {
+      rowChanges++;
+      if (b.y < a.y) climbs++;
+      assert.equal(Math.abs(b.y - a.y), 27, 'changes one row at a time');
+    }
+  }
+  assert.ok(horizontalRuns >= 20);
+  assert.ok(rowChanges > horizontalRuns);
+  assert.ok(climbs >= 8);
+});
+
 test('gardener turns to face horizontal travel and never retraces a segment', () => {
   const { route, frames, facingFrames } = gardenerMotion(demoCalendar());
   const signs = [...facingFrames.matchAll(/scaleX\((-?1)\)/g)].map(m => Number(m[1]));
