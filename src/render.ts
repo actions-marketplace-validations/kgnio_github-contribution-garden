@@ -3,6 +3,30 @@ import type { Calendar } from './data.ts';
 
 export const escapeXml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]!));
 
+export function calendarMonthLabels(calendar: Calendar, x0 = 58, step = 17): { key: string; label: string; x: number; span: number }[] {
+  const ranges = new Map<string, { label: string; first: number; last: number }>();
+  calendar.weeks.forEach((week, column) => week.contributionDays.forEach(day => {
+    const key = day.date.slice(0, 7);
+    const range = ranges.get(key);
+    if (range) range.last = column;
+    else ranges.set(key, {
+      label: new Date(day.date + 'T00:00:00Z').toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }),
+      first: column, last: column
+    });
+  }));
+  const labels: { key: string; label: string; x: number; span: number }[] = [];
+  for (const [key, range] of ranges) {
+    const item = { key, label: range.label, x: x0 + (range.first + range.last) / 2 * step, span: range.last - range.first };
+    const previous = labels.at(-1);
+    // Keep labels at their true month centers. Omit the narrower partial month
+    // if adjacent labels would overlap, rather than shifting either month.
+    if (previous && item.x - previous.x < 34) {
+      if (item.span > previous.span) labels[labels.length - 1] = item;
+    } else labels.push(item);
+  }
+  return labels;
+}
+
 export function renderGarden(calendar: Calendar, user: string, dark = false, demo = false): string {
   const p = dark ? { bg: '#101f1c', panel: '#172b24', text: '#edf5e5', muted: '#a4b9a7', soil: '#304438', soil2: '#385141', line: '#3e5847' } : { bg: '#faf8ef', panel: '#eef0df', text: '#263e30', muted: '#667c63', soil: '#dedfc5', soil2: '#d3d8b6', line: '#d0d6bd' };
   const x0 = 58, y0 = 126, step = 17, rowStep = 27;
@@ -21,17 +45,7 @@ export function renderGarden(calendar: Calendar, user: string, dark = false, dem
     }
     flowers.push(`<g transform="translate(${x} ${y})"><title>${day.date}: ${day.contributionCount} contributions</title><ellipse rx="6.3" ry="2.6" fill="${(wi + day.weekday) % 2 ? p.soil : p.soil2}"/>${plant}</g>`);
   }));
-  const months: string[] = [];
-  let previous = '';
-  calendar.weeks.forEach((w, i) => {
-    const date = w.contributionDays[0]?.date;
-    if (!date) return;
-    const month = date.slice(0, 7);
-    if (month !== previous && (i === 0 || i < calendar.weeks.length - 2)) {
-      months.push(new Date(date + 'T00:00:00Z').toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }));
-    }
-    previous = month;
-  });
+  const months = calendarMonthLabels(calendar, x0, step);
   // A sampled walking route through living plants. Animation is decorative;
   // plant heights always encode activity, never simulated contribution counts.
   const route = active.filter((_, i) => i % Math.max(1, Math.floor(active.length / 12)) === 0).slice(0, 12);
@@ -51,7 +65,7 @@ text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:${p.text}}.
 </style>
 <rect width="956" height="260" rx="16" fill="${p.panel}"/>
 <g transform="translate(-22 -72)">
-${months.map((month, i) => `<text x="${x0 + i * ((calendar.weeks.length - 1) * step) / Math.max(1, months.length - 1)}" y="94" class="small">${month}</text>`).join('')}
+${months.map(month => `<text x="${month.x}" y="94" text-anchor="middle" class="small">${month.label}</text>`).join('')}
 ${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => `<text x="34" y="${y0 + i * rowStep}" class="small">${d}</text>`).join('')}
 ${flowers.join('')}
 <path d="M38 321 H962" stroke="${p.line}" stroke-width="2" stroke-dasharray="2 5"/>

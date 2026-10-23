@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { demoCalendar, fetchCalendar, validateCalendar } from '../src/data.ts';
-import { renderGarden } from '../src/render.ts';
+import { calendarMonthLabels, renderGarden } from '../src/render.ts';
 
 test('calendar renders every day with its original count, both themes', () => {
   const c = validateCalendar(demoCalendar());
@@ -36,4 +36,19 @@ test('API errors do not fall back to invented contributions', async () => {
     globalThis.fetch = async () => new Response('Unavailable', { status: 503 });
     await assert.rejects(fetchCalendar('kgnio', 'test-only'), /503/);
   } finally { globalThis.fetch = original; }
+});
+
+test('month labels follow real date ranges, including month changes inside weeks', () => {
+  const day = (date: string, weekday: number) => ({ date, weekday, contributionCount: 0, contributionLevel: 'NONE' });
+  const weeks = Array.from({ length: 10 }, () => ({ contributionDays: [] as ReturnType<typeof day>[] }));
+  weeks[0].contributionDays = [day('2026-01-31', 6)];
+  weeks[1].contributionDays = [day('2026-02-01', 0)];
+  weeks[4].contributionDays = [day('2026-02-28', 6)];
+  weeks[5].contributionDays = [day('2026-03-01', 0)];
+  weeks[9].contributionDays = [day('2026-03-31', 2)];
+  assert.deepEqual(calendarMonthLabels({ totalContributions: 0, weeks }).map(({ key, x }) => ({ key, x })), [
+    { key: '2026-01', x: 58 }, { key: '2026-02', x: 100.5 }, { key: '2026-03', x: 177 }
+  ]);
+  const boundary = { totalContributions: 0, weeks: [{ contributionDays: [day('2026-01-31', 6), day('2026-02-01', 0)] }, { contributionDays: [day('2026-02-02', 1)] }] };
+  assert.deepEqual(calendarMonthLabels(boundary).map(l => l.key), ['2026-02']);
 });
